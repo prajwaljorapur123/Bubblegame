@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .container {
+        display: flex;
+        height: 100vh;
+        width: 200vh;
+        background: lawngreen;
+    }
+    
+    .box {
+        border: 1px solid;
+        height: 600PX;
+        width: 600PX;
+        justify-content: center;
+        background: seashell;
+        margin-left: 300px;
+        margin-top: 90px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .bubble {
+        border-radius: 50%;
+        opacity: 0.7;
+        position: absolute;
+        border: 2px solid;
+        /* background: red;
+        height: 20px;
+        width: 20px; */
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="box"></div>
+    </div>
+    <script>
+        window.onload = function() {
+            const MAX_BUBBLES = 20;
+            const COLORS = ['red', 'blue', 'green', 'yellow', 'pink']
+
+            // const containerBox = document.querySelector(".container")
+            const innerBox = document.querySelector(".box")
+            const bubbles = []
+
+            function makeBubble() {
+                //pick random radius
+                let radius = Math.floor(Math.random() * 100)
+                    //pick random color
+                let color = Math.floor(Math.random() * 10 % COLORS.length)
+                let random_off = Math.floor(Math.random() * 1000)
+
+                let x = (Math.floor(Math.random() * 100) % 550) + random_off
+                let y = (Math.floor(Math.random() * 100) % 550) + random_off
+
+
+                //crete bubble
+                let div = document.createElement("div")
+                div.classList.add("bubble")
+                div.style.left = `${x-radius}px`;
+                div.style.top = `${y-radius}px`;
+                div.style.width = `${radius*2}px`;
+                div.style.height = `${radius*2}px`;
+                div.style.background = COLORS[color];
+                return {
+                    x,
+                    y,
+                    radius,
+                    color,
+                    div
+                }
+
+            }
+
+
+            function init() {
+                for (let i = 0; i < MAX_BUBBLES; i++) {
+                    const bubble = makeBubble()
+                    bubbles.push(bubble)
+                    innerBox.appendChild(bubble.div)
+                }
+
+            }
+            init()
+        }
+    </script>
+</body>
+
+</html>
