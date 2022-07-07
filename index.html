@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <style>
     .container {
@@ -18,7 +19,7 @@
     .box {
         border: 1px solid;
         height: 600PX;
-        width: 600PX;
+        width: 800PX;
         justify-content: center;
         background: seashell;
         margin-left: 300px;
@@ -32,6 +33,7 @@
         opacity: 0.7;
         position: absolute;
         border: 2px solid;
+        cursor: url('cursor.cur'), pointer;
         /* background: red;
         height: 20px;
         width: 20px; */
@@ -49,36 +51,56 @@
 
             // const containerBox = document.querySelector(".container")
             const innerBox = document.querySelector(".box")
-            const bubbles = []
+            let bubbles = []
+            let i = 0;
 
             function makeBubble() {
                 //pick random radius
                 let radius = Math.floor(Math.random() * 100)
                     //pick random color
                 let color = Math.floor(Math.random() * 10 % COLORS.length)
-                let random_off = Math.floor(Math.random() * 1000)
+                let random_off = Math.floor(Math.random() * 100)
 
-                let x = (Math.floor(Math.random() * 100) % 550) + random_off
-                let y = (Math.floor(Math.random() * 100) % 550) + random_off
+                let x = (Math.floor(Math.random() * 1000) % 550) + random_off
+                let y = (Math.floor(Math.random() * 1000) % 750) + random_off
 
 
                 //crete bubble
                 let div = document.createElement("div")
+
                 div.classList.add("bubble")
+                div.id = i
                 div.style.left = `${x-radius}px`;
                 div.style.top = `${y-radius}px`;
                 div.style.width = `${radius*2}px`;
                 div.style.height = `${radius*2}px`;
                 div.style.background = COLORS[color];
+                i++
                 return {
                     x,
                     y,
                     radius,
-                    color,
-                    div
+                    color: COLORS[color],
+                    div,
+                    maxRadius: radius + Math.floor(Math.random() * 100),
+                    draw() {
+                        // div.style.left = `${x-radius}px`;
+                        // div.style.top = `${y-radius}px`;
+                        this.div.style.width = `${this.radius*2}px`,
+                            this.div.style.height = `${this.radius*2}px`;
+                        // if (this.radius > this.maxRadius) {
+                        //     innerBox.removeChild(this.div)
+                        // }
+
+                    }
                 }
 
+
+
+
             }
+
+
 
 
             function init() {
@@ -89,7 +111,53 @@
                 }
 
             }
+
+
+
+            function growBubbles() {
+                bubbles.forEach(bubble => {
+                    bubble.radius += 5;
+                    bubble.draw()
+                })
+            }
+
+
+
+            function mainloop() {
+                growBubbles()
+                let remainingBubbles = bubbles.filter(b => b.radius < b.maxRadius)
+                let removedBubbles = bubbles.filter(b => !remainingBubbles.includes(b))
+                removedBubbles.forEach(b => innerBox.removeChild(b.div))
+                bubbles = remainingBubbles
+                setTimeout(mainloop, 1000)
+
+            }
             init()
+            mainloop()
+
+            innerBox.addEventListener("click", function(e) {
+                    const element = e.target
+                    if (element.classList.contains("bubble")) {
+                        innerBox.removeChild(element)
+                        const bubble = bubbles.filter(b => b.div == element)
+                        bubbles = bubbles.filter(b => b.div != element)
+                        if (bubble[0].color == 'red') {
+                            alert("red clicked")
+                            init()
+                        }
+                    }
+                })
+                // console.log(bubbles);
+
+            // $(document).ready(function() {
+            //     $(".bubble").click(function() {
+            //         $(this).hide();
+            //     });
+            // });
+
+
+
+
         }
     </script>
 </body>
